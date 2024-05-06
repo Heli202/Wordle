@@ -1,6 +1,6 @@
 import random
 import time
-## There is an issue when u get the right letterin the right spot, but then guess a word with that letter in a different spot
+# There is an issue when u get the right letter in the right spot, but then guess a word with that letter in a different spot
 def main():
     """
     Main function for the Wordle game.
@@ -28,7 +28,7 @@ def main():
             time.sleep(1)
             print("Sorry, you have reached the maximum number of guesses.\n\n")
             time.sleep(1)
-            print(target_word)
+            print("The word was: ", target_word)
             try_again = input("Would you like to try again with another word? (y/n): ").lower()
             if try_again != "y":
                 time.sleep(1)
@@ -129,7 +129,7 @@ def score_guess(target_word, user_guess):
         if guess_char == target_word[i]:
             score_list.append(2)
         elif guess_char in target_word and target_word_count[guess_char] > 0:
-            score_list.append(0)
+            score_list.append(1)
             target_word_count[guess_char] -= 1
         else:
             score_list.append(0)
