@@ -1,7 +1,6 @@
 import random
 import time
-# There is an issue when u get the right letter in the right spot, but then guess a word with that letter in a different spot
-# Another issue when 
+
 def main():
     """
     Main function for the Wordle game.
@@ -11,7 +10,7 @@ def main():
     """
     while True:
         welcome_message()
-        target_word = "world"
+        target_word = acquire_target_word()
         count = 6
         while count > 0:
             user_guess = user_input()
@@ -114,7 +113,7 @@ def user_input():
         else:
             print("Your guess has at least one character that is not a letter, please enter a word with only letters.")
 
-def find_duplicates(user_guess):
+# def find_duplicates(user_guess):
     """
     Search for duplicates in the count of the letters in a user guess
     Args:
