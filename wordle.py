@@ -1,6 +1,7 @@
 import random
 import time
 # There is an issue when u get the right letter in the right spot, but then guess a word with that letter in a different spot
+# Another issue when 
 def main():
     """
     Main function for the Wordle game.
@@ -10,7 +11,7 @@ def main():
     """
     while True:
         welcome_message()
-        target_word = acquire_target_word()
+        target_word = "world"
         count = 6
         while count > 0:
             user_guess = user_input()
@@ -23,19 +24,18 @@ def main():
                 time.sleep(1)
                 print("THIS IS YOUR LAST GUESS, make it count...\n\n")
                 time.sleep(2)
-
-        else:
-            time.sleep(1)
-            print("Sorry, you have reached the maximum number of guesses.\n\n")
-            time.sleep(1)
-            print("The word was: ", target_word)
-            try_again = input("Would you like to try again with another word? (y/n): ").lower()
-            if try_again != "y":
+            else:
                 time.sleep(1)
-                print("Maybe next time...")
+                print("Sorry, you have reached the maximum number of guesses.\n\n")
                 time.sleep(1)
-                break
-    return count
+                print("The word was: ", target_word)
+                try_again = input("Would you like to try again with another word? (y/n): ").lower()
+                if try_again != "y":
+                    time.sleep(1)
+                    print("Maybe next time...")
+                    time.sleep(1)
+                    break
+        return count
 
 def acquire_target_word():
 
@@ -71,7 +71,13 @@ def welcome_message():
             time.sleep(1.5)
             print("\tThe letter is in the target word but not in the correct position, you will score 1")
             time.sleep(1.5)
-            print("\tThe letter is in the target word and in the correct position, you will score 2\n")
+            print("\tThe letter is in the target word and in the correct position, you will score 2")
+        elif intro_choice == "n":
+            pass
+        elif intro_choice != "y":
+            print("Please enter a valid input (y/n)")
+            main()
+
     elif play_choice == "n":
         time.sleep(1)
         print("Maybe next time...")
@@ -108,6 +114,16 @@ def user_input():
         else:
             print("Your guess has at least one character that is not a letter, please enter a word with only letters.")
 
+def find_duplicates(user_guess):
+    """
+    Search for duplicates in the count of the letters in a user guess
+    Args:
+        user_guess (str): The user's guess for the target word.
+    Returns:
+        list: The duplicate letters in a user's guess
+    """
+    return list(set([letter for letter in user_guess if user_guess.count(letter) > 1]))
+
 def score_guess(target_word, user_guess):
     """
     Compare the user's guess to the target word and score it.
@@ -122,19 +138,35 @@ def score_guess(target_word, user_guess):
     """
     score_list = []
     target_word_count = {}
+    scored_letters = {}
+    # Count how many of each letter are in the target word
     for char in target_word:
+        # Increment the count of char in target_word_count
         target_word_count[char] = target_word_count.get(char, 0) + 1
-
+    # Iterate over each character in the user's guess
     for i, guess_char in enumerate(user_guess):
+        # Check if the letter has been scored
+        if guess_char in scored_letters:
+            # If the letter was previously scored as 1, remove the score
+            if scored_letters[guess_char] == 1:
+                score_list[score_list.index(1)] = 0
+            # If the letter was previously scored as 2, skip it again
+            elif scored_letters[guess_char] == 2:
+                score_list.append(0)
+                continue
+        # Normal scoring from here onwards if it hasn't been scored before
         if guess_char == target_word[i]:
             score_list.append(2)
-        elif guess_char in target_word and target_word_count[guess_char] > 0:
+            scored_letters[guess_char] = 2
+        elif guess_char in target_word:
             score_list.append(1)
-            target_word_count[guess_char] -= 1
+            scored_letters[guess_char] = 1
         else:
             score_list.append(0)
+    
     time.sleep(1)
     print("Score:", score_list)
+
     if score_list != [2, 2, 2, 2, 2]:
         print("You did not get the word")
     else:
